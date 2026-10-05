@@ -8,11 +8,11 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $transactions = Transaction::with('details.product')
-            ->latest()
-            ->paginate(15);
+        $products = Product::with('category')
+            ->orderBy('name')
+            ->paginate(10);
 
-        return view('transactions.index', compact('transactions'));
+        return view('products.index', compact('products'));
     }
 
     public function create()
