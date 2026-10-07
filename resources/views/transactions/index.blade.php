@@ -17,6 +17,8 @@
                 {{ $transaction->created_at->format('d M Y H:i') }}
                 &middot;
                 Rp {{ number_format($transaction->total) }}
+                &middot;
+                {{ $transaction->user->name }}
             </p>
 
             <ul class="text-sm text-slate-500 mt-1">
