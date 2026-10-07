@@ -19,6 +19,8 @@
                 Rp {{ number_format($transaction->total) }}
                 &middot;
                 {{ $transaction->user->name }}
+                &middot; 
+                {{ $transaction->details->sum('qty') }} item
             </p>
 
             <ul class="text-sm text-slate-500 mt-1">
