@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTransactionRequest;
+use App\Models\TransactionDetail;
+use Illuminate\Support\Facades\DB;
 use App\Models\Product;
 use App\Models\Transaction;
 
@@ -14,9 +17,37 @@ class TransactionController extends Controller
         return view('pos.create', ['products' => $products]);
     }
 
-    public function store()
+    public function store(StoreTransactionRequest $request)
     {
-        return 'Transaksi disimpan (belum ada logika penyimpanan)';
+        $validated = $request->validated();
+
+        DB::transaction(function () use ($validated) {
+            $transaction = Transaction::create([
+                'user_id' => 1, // hardcode sementara sampai fitur auth/login
+                'total'   => 0,
+            ]);
+
+            $total = 0;
+
+            foreach ($validated['items'] as $item) {
+                $product = Product::findOrFail($item['product_id']);
+                $subtotal = $product->price * $item['qty'];
+                $total += $subtotal;
+
+                TransactionDetail::create([
+                    'transaction_id' => $transaction->id,
+                    'product_id'     => $product->id,
+                    'qty'            => $item['qty'],
+                    'subtotal'       => $subtotal,
+                ]);
+            }
+
+            $transaction->update(['total' => $total]);
+        });
+
+        return redirect()
+            ->route('transactions.create') // Sesuaikan dengan nama route halaman kasir/POS kamu
+            ->with('success', 'Transaksi berhasil disimpan.');
     }
 
     public function index()
