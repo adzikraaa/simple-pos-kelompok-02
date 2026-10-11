@@ -33,15 +33,18 @@
 }">
     @csrf
 
-    <div class="grid grid-cols-3 gap-4">
-        @foreach ($products as$product)
-            <div class="border rounded-md p-3 cursor-pointer hover:bg-slate-50 transition"
-                @click="addToCart({{ $product->id }}, '{{ addslashes($product->name) }}', {{$product->price }})">
-                <p class="font-medium">{{ $product->name }}</p>
-                <p class="text-sm text-slate-500">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
-            </div>
-        @endforeach
-    </div>
+<div class="grid grid-cols-3 gap-4">
+    @foreach ($products as $product)
+        <div class="border rounded-md p-3 cursor-pointer hover:bg-slate-50 transition"
+            @click="addToCart({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }})">
+            <p class="font-medium">{{ $product->name }}</p>
+            <p class="text-sm text-slate-500">
+                Rp {{ number_format($product->price, 0, ',', '.') }}
+            </p>
+        </div>
+    @endforeach
+</div>
+
 
     <div class="mt-6 border-t pt-4">
         <h2 class="font-medium mb-3">Keranjang Belanja</h2>
@@ -54,4 +57,33 @@
                 </div>
 
                 <div class="flex items-center gap-2">
-                    <input type="number" min="1" x-model.number="item.qty"
+                                       <input type="number" min="1" x-model.number="item.qty"
+                        class="w-16 border rounded px-2 py-1">
+                    <button type="button" @click="removeItem(index)"
+                        class="text-red-600 hover:text-red-800">
+                        Hapus
+                    </button>
+                </div>
+            </div>
+        </template>
+
+        <template x-for="item in cart" :key="'hidden-' + item.id">
+            <div>
+                <input type="hidden" :name="'items[' + cart.indexOf(item) + '][product_id]'" :value="item.id">
+                <input type="hidden" :name="'items[' + cart.indexOf(item) + '][qty]'" :value="item.qty">
+            </div>
+        </template>
+
+        <div class="mt-4 flex justify-between font-semibold">
+            <span>Total</span>
+            <span x-text="'Rp ' + subtotal().toLocaleString('id-ID')"></span>
+        </div>
+
+        <button type="submit"
+            :disabled="cart.length === 0"
+            class="mt-4 bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50">
+            Simpan Transaksi
+        </button>
+    </div>
+</form>
+@endsection
