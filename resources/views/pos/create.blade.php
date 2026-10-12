@@ -34,7 +34,7 @@
     @csrf
 
     <div class="grid grid-cols-3 gap-4">
-        @foreach ($products as$product)
+        @foreach ($products as $product)
             <div class="border rounded-md p-3 cursor-pointer hover:bg-slate-50 transition"
                 @click="addToCart({{ $product->id }}, '{{ addslashes($product->name) }}', {{$product->price }})">
                 <p class="font-medium">{{ $product->name }}</p>
