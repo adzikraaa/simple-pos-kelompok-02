@@ -1,3 +1,4 @@
+# Jobsheet 6
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
@@ -57,3 +58,47 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+# Jobsheet 7
+## Skenario Uji Manual
+
+Persiapan: `php artisan migrate:fresh --seed`, lalu `php artisan serve` dan `npm run dev`.
+
+### Peran admin (admin@pos.test / password)
+
+| Langkah | Hasil yang diharapkan |
+|---|---|
+| Login lalu buka /products | Daftar produk tampil |
+| Buka /categories | Daftar kategori tampil |
+| Lihat navigasi | Menu Produk dan Kategori terlihat, ada tombol Keluar |
+
+### Peran kasir (kasir@pos.test / password)
+
+| Langkah | Hasil yang diharapkan |
+|---|---|
+| Login lalu buka /pos | Halaman kasir tampil |
+| Buka /products | 403: Halaman ini hanya untuk peran admin. |
+| Lihat navigasi | Menu Produk dan Kategori tidak terlihat |
+
+### Peran manager (manager@pos.test / password)
+
+| Langkah | Hasil yang diharapkan |
+|---|---|
+| Login lalu buka /transactions | Riwayat transaksi tampil |
+| Buka /products | 403: Halaman ini hanya untuk peran admin. |
+
+### Tamu (belum login)
+
+| Langkah | Hasil yang diharapkan |
+|---|---|
+| Buka /products | Diarahkan ke /login |
+| Buka /info | Halaman info tampil |
+| Login dengan kata sandi salah | Pesan: Email atau kata sandi salah. |
+| curl -i http://127.0.0.1:8000/pos -H "Accept: application/json" | 401 Unauthorized |
+
+### Akun dinonaktifkan
+
+| Langkah | Hasil yang diharapkan |
+|---|---|
+| Set is_active = false lewat tinker, lalu login | Pesan: Akun dinonaktifkan. Hubungi admin. |
