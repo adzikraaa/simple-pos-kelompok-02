@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <title>Kasir</title>
+    <script type="module" src="http://[::1]:5173/@vite/client"></script><link rel="stylesheet" href="http://[::1]:5173/resources/css/app.css" /><script type="module" src="http://[::1]:5173/resources/js/app.js"></script></head>
+<body>
+    <nav class="bg-slate-900 text-white px-4 py-3 flex items-center gap-6">
+   <span class="font-semibold">Simple POS</span>
+
+   <a href="http://127.0.0.1:8000/pos"
+      class="hover:underline font-semibold underline">
+       Kasir
+   </a>
+
+   <a href="http://127.0.0.1:8000/transactions"
+      class="hover:underline ">
+       Transaksi
+   </a>
+
+   <a href="http://127.0.0.1:8000/products" class="hover:underline">
+       Produk
+   </a>
+</nav>    <main>    <h1 class="text-lg font-semibold mb-4">Transaksi Kasir</h1>
+
+    
+    
+    <form method="POST" action="http://127.0.0.1:8000/pos" x-data="{
+        cart: [],
+        addToCart(id, name, price) {
+            const existing = this.cart.find(item => item.id === id);
+
+            if (existing) {
+                existing.qty++;
+            } else {
+                this.cart.push({ id, name, price, qty: 1 });
+            }
+        },
+        removeItem(index) {
+            this.cart.splice(index, 1);
+        },
+        subtotal() {
+            return this.cart.reduce(
+                (sum, item) => sum + (item.price * item.qty), 0
+            );
+        }
+    }">
+        <input type="hidden" name="_token" value="NETtHrHe853y8zOHF2MPuw3M4weNSpaxT3dGj5Pr" autocomplete="off">
+        <div class="grid grid-cols-3 gap-4">
+                            <div
+                    class="border rounded-md p-3 cursor-pointer hover:bg-slate-50 transition"
+                    @click="addToCart(
+                        1,
+                        'dolorem ratione',
+                        4237
+                    )"
+                >
+                    <p class="font-medium">dolorem ratione</p>
+                    <p class="text-sm text-slate-500">
+                        Rp 4.237
+                    </p>
+                </div>
+                            <div
+                    class="border rounded-md p-3 cursor-pointer hover:bg-slate-50 transition"
+                    @click="addToCart(
+                        2,
+                        'fugit rerum',
+                        25391
+                    )"
+                >
+                    <p class="font-medium">fugit rerum</p>
+                    <p class="text-sm text-slate-500">
+                        Rp 25.391
+                    </p>
+                </div>
+                            <div
+                    class="border rounded-md p-3 cursor-pointer hover:bg-slate-50 transition"
+                    @click="addToCart(
+                        3,
+                        'sapiente nobis',
+                        33217
+                    )"
+                >
+                    <p class="font-medium">sapiente nobis</p>
+                    <p class="text-sm text-slate-500">
+                        Rp 33.217
+                    </p>
+                </div>
+                            <div
+                    class="border rounded-md p-3 cursor-pointer hover:bg-slate-50 transition"
+                    @click="addToCart(
+                        4,
+                        'quo id',
+                        39502
+                    )"
+                >
+                    <p class="font-medium">quo id</p>
+                    <p class="text-sm text-slate-500">
+                        Rp 39.502
+                    </p>
+                </div>
+                            <div
+                    class="border rounded-md p-3 cursor-pointer hover:bg-slate-50 transition"
+                    @click="addToCart(
+                        5,
+                        'odio excepturi',
+                        8823
+                    )"
+                >
+                    <p class="font-medium">odio excepturi</p>
+                    <p class="text-sm text-slate-500">
+                        Rp 8.823
+                    </p>
+                </div>
+                            <div
+                    class="border rounded-md p-3 cursor-pointer hover:bg-slate-50 transition"
+                    @click="addToCart(
+                        6,
+                        'quaerat nihil',
+                        21570
+                    )"
+                >
+                    <p class="font-medium">quaerat nihil</p>
+                    <p class="text-sm text-slate-500">
+                        Rp 21.570
+                    </p>
+                </div>
+                            <div
+                    class="border rounded-md p-3 cursor-pointer hover:bg-slate-50 transition"
+                    @click="addToCart(
+                        7,
+                        'itaque beatae',
+                        6044
+                    )"
+                >
+                    <p class="font-medium">itaque beatae</p>
+                    <p class="text-sm text-slate-500">
+                        Rp 6.044
+                    </p>
+                </div>
+                            <div
+                    class="border rounded-md p-3 cursor-pointer hover:bg-slate-50 transition"
+                    @click="addToCart(
+                        8,
+                        'magni cumque',
+                        33869
+                    )"
+                >
+                    <p class="font-medium">magni cumque</p>
+                    <p class="text-sm text-slate-500">
+                        Rp 33.869
+                    </p>
+                </div>
+                            <div
+                    class="border rounded-md p-3 cursor-pointer hover:bg-slate-50 transition"
+                    @click="addToCart(
+                        9,
+                        'quos ab',
+                        41926
+                    )"
+                >
+                    <p class="font-medium">quos ab</p>
+                    <p class="text-sm text-slate-500">
+                        Rp 41.926
+                    </p>
+                </div>
+                            <div
+                    class="border rounded-md p-3 cursor-pointer hover:bg-slate-50 transition"
+                    @click="addToCart(
+                        10,
+                        'ipsum est',
+                        37164
+                    )"
+                >
+                    <p class="font-medium">ipsum est</p>
+                    <p class="text-sm text-slate-500">
+                        Rp 37.164
+                    </p>
+                </div>
+                            <div
+                    class="border rounded-md p-3 cursor-pointer hover:bg-slate-50 transition"
+                    @click="addToCart(
+                        11,
+                        'vel est',
+                        38734
+                    )"
+                >
+                    <p class="font-medium">vel est</p>
+                    <p class="text-sm text-slate-500">
+                        Rp 38.734
+                    </p>
+                </div>
+                            <div
+                    class="border rounded-md p-3 cursor-pointer hover:bg-slate-50 transition"
+                    @click="addToCart(
+                        12,
+                        'autem tenetur',
+                        10166
+                    )"
+                >
+                    <p class="font-medium">autem tenetur</p>
+                    <p class="text-sm text-slate-500">
+                        Rp 10.166
+                    </p>
+                </div>
+                    </div>
+
+        <div class="mt-6 border-t pt-4">
+            <h2 class="font-medium mb-3">Keranjang Belanja</h2>
+
+            <template x-for="(item, index) in cart" :key="item.id">
+                <div class="flex items-center justify-between py-2 border-b">
+                    <div>
+                        <p
+                            x-text="item.name + ' x ' + item.qty + ' - Rp ' + (item.price * item.qty).toLocaleString('id-ID')"
+                        ></p>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <input
+                            type="number"
+                            min="1"
+                            step="1"
+                            x-model.number="item.qty"
+                            class="w-20 border rounded px-2 py-1"
+                        >
+
+                        <button
+                            type="button"
+                            @click="removeItem(index)"
+                            class="text-red-600 hover:text-red-800"
+                        >
+                            Hapus
+                        </button>
+                    </div>
+                </div>
+            </template>
+
+            <template x-for="(item, index) in cart" :key="'hidden-' + item.id">
+                <div>
+                    <input
+                        type="hidden"
+                        :name="'items[' + index + '][product_id]'"
+                        :value="item.id"
+                    >
+                    <input
+                        type="hidden"
+                        :name="'items[' + index + '][qty]'"
+                        :value="item.qty"
+                    >
+                </div>
+            </template>
+
+            <div class="mt-4 flex justify-between font-semibold">
+                <span>Subtotal</span>
+                <span x-text="'Rp ' + subtotal().toLocaleString('id-ID')"></span>
+            </div>
+
+            <button
+                type="submit"
+                :disabled="cart.length === 0"
+                class="mt-4 bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
+            >
+                Simpan Transaksi
+            </button>
+        </div>
+    </form>
+</main>
+</body>
+</html>
