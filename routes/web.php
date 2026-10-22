@@ -1,4 +1,6 @@
+
 <?php
+
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
@@ -12,7 +14,10 @@ Route::get('/', function () {
 
 Route::middleware('guest')->group(function () {
     Route::get('/info', fn () => view('info'))->name('info');
-    Route::get('/login', [LoginController::class, 'create'])->name('login');
+
+    Route::get('/login', [LoginController::class, 'create'])
+        ->name('login');
+
     Route::post('/login', [LoginController::class, 'store']);
 });
 
@@ -20,15 +25,38 @@ Route::post('/logout', [LoginController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/pos', [TransactionController::class, 'create'])->name('pos.create');
-    Route::post('/pos', [TransactionController::class, 'store'])->name('transactions.store');
-    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
+// Dashboard
+// Aktifkan kembali jika DashboardController memang tersedia.
+// Route::get('/dashboard', DashboardController::class)
+//     ->middleware(['auth', 'role:admin,kasir,manager'])
+//     ->name('dashboard');
 
-    Route::middleware('role:admin')->group(function () {
-        Route::resource('categories', CategoryController::class)->except('show');
-        Route::resource('products', ProductController::class)->except(['show', 'destroy']);
-        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-        Route::get('/reports/export/csv', [ReportController::class, 'exportCsv'])->name('reports.export.csv');
-    });
+// POS dan transaksi untuk admin, kasir, dan manager
+Route::middleware(['auth', 'role:admin,kasir,manager'])->group(function () {
+    Route::get('/pos', [TransactionController::class, 'create'])
+        ->name('pos.create');
+
+    Route::post('/pos', [TransactionController::class, 'store'])
+        ->name('transactions.store');
+
+    Route::get('/transactions', [TransactionController::class, 'index'])
+        ->name('transactions.index');
+
+    Route::get('/transactions/{transaction}', [TransactionController::class, 'show'])
+        ->name('transactions.show');
+});
+
+// Kategori, produk, dan laporan hanya untuk admin
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::resource('categories', CategoryController::class)
+        ->except('show');
+
+    Route::resource('products', ProductController::class)
+        ->except(['show', 'destroy']);
+
+    Route::get('/reports', [ReportController::class, 'index'])
+        ->name('reports.index');
+
+    Route::get('/reports/export/csv', [ReportController::class, 'exportCsv'])
+        ->name('reports.export.csv');
 });
