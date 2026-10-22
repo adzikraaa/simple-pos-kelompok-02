@@ -8,6 +8,9 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/reports/export/xlsx', [ReportController::class, 'exportExcel'])->name('reports.export.xlsx');
+Route::get('/reports/export/csv', [ReportController::class, 'exportCsv'])->name('reports.export.csv');
+
 Route::get('/', function () {
     return redirect()->route('pos.create');
 });
