@@ -1,4 +1,3 @@
-
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
@@ -7,9 +6,6 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/reports/export/xlsx', [ReportController::class, 'exportExcel'])->name('reports.export.xlsx');
-Route::get('/reports/export/csv', [ReportController::class, 'exportCsv'])->name('reports.export.csv');
 
 Route::get('/', function () {
     return redirect()->route('pos.create');
@@ -27,12 +23,6 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [LoginController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');
-
-// Dashboard
-// Aktifkan kembali jika DashboardController memang tersedia.
-// Route::get('/dashboard', DashboardController::class)
-//     ->middleware(['auth', 'role:admin,kasir,manager'])
-//     ->name('dashboard');
 
 // POS dan transaksi untuk admin, kasir, dan manager
 Route::middleware(['auth', 'role:admin,kasir,manager'])->group(function () {
@@ -62,4 +52,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/reports/export/csv', [ReportController::class, 'exportCsv'])
         ->name('reports.export.csv');
+
+    Route::get('/reports/export/xlsx', [ReportController::class, 'exportExcel'])
+        ->name('reports.export.xlsx');
+
+    Route::get('/reports/export/pdf', [ReportController::class, 'exportPdf'])
+        ->name('reports.export.pdf');
 });
