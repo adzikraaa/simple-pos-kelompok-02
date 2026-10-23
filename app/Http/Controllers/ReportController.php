@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\SalesReportExport;
 use App\Models\Transaction;
 use Illuminate\Database\Eloquent\Builder;
@@ -57,6 +58,26 @@ class ReportController extends Controller
             new SalesReportExport($this->filteredQuery($from, $to)),
             'laporan-penjualan.xlsx'
         );
+    }
+
+    public function exportPdf(Request $request)
+    {
+        [$from, $to] = $this->resolveDateRange($request);
+        $query = $this->filteredQuery($from, $to);
+        $totalPenjualan = (clone $query)->sum('total');
+        $jumlahTransaksi = (clone $query)->count();
+        // Ambil maksimal 50 transaksi untuk ditampilkan di PDF.
+        $transaksi = $query->orderByDesc('created_at')
+            ->limit(50)
+            ->get();
+        $pdf = Pdf::loadView('reports.pdf', [
+            'transaksi' => $transaksi,
+            'totalPenjualan' => $totalPenjualan,
+            'jumlahTransaksi' => $jumlahTransaksi,
+            'from' => $from->toDateString(),
+            'to' => $to->toDateString(),
+        ]);
+        return $pdf->download('laporan-penjualan.pdf');
     }
 
     private function resolveDateRange(Request $request): array
