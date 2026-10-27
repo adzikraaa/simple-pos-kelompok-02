@@ -73,7 +73,7 @@
             </tr>
         </thead>
         <tbody>
-            @forelse ($transaksi as $item)
+            @foreach ($transactions as $item)
                 <tr>
                     <td>{{ $item->id }}</td>
                     <td>{{ $item->created_at }}</td>
