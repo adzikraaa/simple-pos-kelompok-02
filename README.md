@@ -77,3 +77,6 @@ Saat ini, proses ekspor dijalankan secara langsung melalui `Excel::download()`. 
 Ekspor laporan penjualan ke Excel merupakan kandidat yang layak dipindahkan ke queue, terutama ketika data transaksi sudah banyak. Penerapan queue dapat membantu memisahkan proses pembuatan file dari permintaan pengguna sehingga aplikasi lebih responsif.
 
 Analisis ini merupakan usulan pengembangan. Proses ekspor Excel pada aplikasi saat ini masih dijalankan secara langsung dan belum dinyatakan sebagai queued job.
+### Perbandingan Import CSV: Manual vs Laravel Excel
+* **Lebih ringkas:** Versi Laravel Excel. Kode jauh lebih bersih karena kita tidak perlu memecah baris (*explode/str_getcsv*), menghapus *header*, dan membuat *looping* manual. Semuanya sudah di-*handle* otomatis oleh *interface* `WithHeadingRow` dan `ToModel`.
+* **Lebih mudah dikontrol:** Versi Manual. Kita memiliki kendali penuh di dalam fungsi *controller* untuk melakukan validasi kompleks per baris, melewati (*continue*) data yang salah, menyimpan pesan *error* spesifik ke tabel `import_errors` (seperti pada tantangan T2), dan menghitung secara presisi berapa jumlah produk baru vs produk yang hanya diperbarui.

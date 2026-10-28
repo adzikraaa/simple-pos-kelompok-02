@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Transaction;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -15,6 +16,7 @@ use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Imports\ProductsImport;
 
 class ReportController extends Controller
 {
@@ -62,16 +64,36 @@ class ReportController extends Controller
             'laporan-penjualan.xlsx',
         );
     }
-
     public function exportPdf(Request $request): Response
     {
         [$from, $to] = $this->resolveDateRange($request);
         $categoryId = $request->input('category_id');
 
+        $query = $this->filteredQuery($from, $to, $categoryId);
+
+        $topProducts = DB::table('transaction_details')
+            ->join('transactions', 'transaction_details.transaction_id', '=', 'transactions.id')
+            ->join('products', 'transaction_details.product_id', '=', 'products.id')
+            ->whereBetween('transactions.created_at', [$from, $to])
+            ->when($categoryId, function ($q) use ($categoryId) {
+                $q->where('products.category_id', $categoryId);
+            })
+            ->select(
+                'products.id',
+                'products.name',
+                DB::raw('SUM(transaction_details.qty) as total_terjual')
+            )
+            ->groupBy('products.id', 'products.name')
+            ->orderByDesc('total_terjual')
+            ->orderBy('products.name')
+            ->limit(5)
+            ->get();
+
         $pdf = Pdf::loadView('reports.pdf', [
-            'totalPenjualan' => $this->filteredQuery($from, $to)->sum('total'),
-            'jumlahTransaksi' => $this->filteredQuery($from, $to)->count(),
-            'transactions' => $this->filteredQuery($from, $to)->latest()->limit(50)->get(),
+            'totalPenjualan' => $query->sum('total'),
+            'jumlahTransaksi' => $query->count(),
+            'transactions' => $query->latest()->limit(50)->get(),
+            'topProducts' => $topProducts,
             'from' => $from->toDateString(),
             'to' => $to->toDateString(),
         ]);
@@ -81,7 +103,9 @@ class ReportController extends Controller
 
     public function importForm(): View
     {
-        return view('reports.import');
+        return view('reports.import', [
+            'importErrors' => DB::table('import_errors')->orderByDesc('created_at')->get(),
+        ]);
     }
 
     public function import(Request $request): RedirectResponse
@@ -120,5 +144,16 @@ class ReportController extends Controller
         }
 
         return $query;
+    }
+
+    public function importExcelStore(Request $request)
+    {
+        $request->validate([
+            'csv_excel' => ['required', 'file', 'mimes:csv,txt,xlsx,xls'],
+        ]);
+
+        Excel::import(new ProductsImport, $request->file('csv_excel'));
+
+        return back()->with('success', 'Import via Laravel Excel berhasil diproses.');
     }
 }
