@@ -63,6 +63,35 @@
         </p>
     </div>
 
+    <h3>5 Produk Terlaris</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Nama Produk</th>
+                <th>Total Terjual</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($topProducts as $product)
+                <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $product->name }}</td>
+                    <td class="number">
+                        {{ number_format($product->total_terjual, 0, ',', '.') }}
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="3" style="text-align: center;">
+                        Tidak ada data produk terjual pada periode ini.
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+
     <table>
         <thead>
             <tr>
@@ -73,7 +102,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($transactions as $item)
+            @forelse ($transactions as $item)
                 <tr>
                     <td>{{ $item->id }}</td>
                     <td>{{ $item->created_at }}</td>
