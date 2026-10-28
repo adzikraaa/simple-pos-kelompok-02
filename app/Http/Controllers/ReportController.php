@@ -16,6 +16,8 @@ use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Imports\ProductsImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
@@ -123,5 +125,16 @@ class ReportController extends Controller
         }
 
         return $query;
+    }
+
+    public function importExcelStore(Request $request)
+    {
+        $request->validate([
+            'csv_excel' => ['required', 'file', 'mimes:csv,txt,xlsx,xls'],
+        ]);
+
+        Excel::import(new ProductsImport, $request->file('csv_excel'));
+
+        return back()->with('success', 'Import via Laravel Excel berhasil diproses.');
     }
 }
