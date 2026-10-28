@@ -57,3 +57,23 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+### Analisis Proses yang Layak Dipindahkan ke Queue (T5)
+
+#### Proses: Ekspor Laporan Penjualan ke Excel
+
+Aplikasi Simple POS memiliki fitur ekspor laporan penjualan ke format Excel melalui method `exportExcel()` pada `ReportController`. Proses ekspor mengambil data transaksi berdasarkan rentang tanggal dan kategori yang dipilih, kemudian menghasilkan file Excel untuk diunduh pengguna.
+
+Saat ini, proses ekspor dijalankan secara langsung melalui `Excel::download()`. Jika jumlah transaksi semakin banyak, proses pengambilan data dan pembuatan file berpotensi membutuhkan waktu lebih lama.
+
+**Alasan proses ini layak dipindahkan ke queue:**
+
+1. **Mengurangi waktu tunggu pengguna.** Pembuatan file dapat dilakukan di latar belakang sehingga pengguna tidak harus menunggu seluruh proses ekspor selesai dalam satu permintaan.
+2. **Mendukung data dalam jumlah besar.** Ketika jumlah transaksi meningkat, proses pembuatan laporan dapat memerlukan waktu dan sumber daya lebih besar.
+3. **Mendukung penanganan kegagalan.** Job dapat dikonfigurasi untuk mencoba kembali apabila terjadi kegagalan sementara selama proses ekspor.
+
+**Kesimpulan**
+
+Ekspor laporan penjualan ke Excel merupakan kandidat yang layak dipindahkan ke queue, terutama ketika data transaksi sudah banyak. Penerapan queue dapat membantu memisahkan proses pembuatan file dari permintaan pengguna sehingga aplikasi lebih responsif.
+
+Analisis ini merupakan usulan pengembangan. Proses ekspor Excel pada aplikasi saat ini masih dijalankan secara langsung dan belum dinyatakan sebagai queued job.
