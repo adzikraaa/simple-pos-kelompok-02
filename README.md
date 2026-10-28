@@ -57,3 +57,7 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+### Perbandingan Import CSV: Manual vs Laravel Excel
+* **Lebih ringkas:** Versi Laravel Excel. Kode jauh lebih bersih karena kita tidak perlu memecah baris (*explode/str_getcsv*), menghapus *header*, dan membuat *looping* manual. Semuanya sudah di-*handle* otomatis oleh *interface* `WithHeadingRow` dan `ToModel`.
+* **Lebih mudah dikontrol:** Versi Manual. Kita memiliki kendali penuh di dalam fungsi *controller* untuk melakukan validasi kompleks per baris, melewati (*continue*) data yang salah, menyimpan pesan *error* spesifik ke tabel `import_errors` (seperti pada tantangan T2), dan menghitung secara presisi berapa jumlah produk baru vs produk yang hanya diperbarui.
