@@ -13,4 +13,5 @@ Route::middleware('auth:sanctum', 'throttle:api')->group(function () {
   Route::get('/products', [ProductController::class, 'index']);
   Route::get('/categories', [CategoryController::class, 'index']);
   Route::post('/transactions', [TransactionController::class,'store']);
+  Route::middleware(['auth:sanctum', 'idempotent'])->post('/transactions', [TransactionController::class, 'store']);
 });
