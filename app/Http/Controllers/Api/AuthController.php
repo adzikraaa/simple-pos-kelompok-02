@@ -20,7 +20,18 @@ class AuthController extends Controller
         }
 
         $user = Auth::user();
-        $token = $user->createToken('mobile-kasir')->plainTextToken;
+
+        $abilities = [
+            'products:read',
+            'transactions:create',
+            'transactions:read',
+        ];
+
+        $token = $user->createToken(
+            'mobile-kasir',
+            $abilities,
+            now()->addDay()
+        )->plainTextToken;
 
         return response()->json(['token' => $token]);
     }

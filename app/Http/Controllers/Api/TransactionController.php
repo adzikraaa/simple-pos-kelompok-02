@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TransactionResource;
 use App\Models\Transaction;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class TransactionController extends Controller
 {
@@ -64,5 +66,18 @@ class TransactionController extends Controller
             'message' => 'Transaksi berhasil dibuat',
             'data' => $transaction->load('details.product'),
         ], 201);
+    }
+
+    // Menampilkan detail transaksi berdasarkan ID
+    public function show(Transaction $transaction)
+    {
+        // Periksa hak akses pengguna melalui TransactionPolicy
+        Gate::authorize('view', $transaction);
+
+        // Ambil data pengguna dan detail produk
+        $transaction->load(['user', 'details.product']);
+
+        // Kembalikan data menggunakan TransactionResource
+        return new TransactionResource($transaction);
     }
 }
