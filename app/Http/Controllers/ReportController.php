@@ -17,7 +17,6 @@ use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Imports\ProductsImport;
-use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
