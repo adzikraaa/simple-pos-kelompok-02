@@ -28,6 +28,12 @@ return Application::configure(basePath: dirname(__DIR__))
                 return response()->json(['message' => 'Resource tidak ditemukan.'], 404);
             }
         });
-    })->create();
+    })
+    ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->alias([
+            'idempotent' => \App\Http\Middleware\EnsureIdempotency::class,
+        ]);
+    })
+    ->create();
 
     

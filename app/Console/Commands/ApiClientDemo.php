@@ -54,34 +54,27 @@ class ApiClientDemo extends Command
             $this->error('Gagal mengambil data produk: ' . $productsResponse->body());
         }
 
-        $idempotencyKey = (string) Str::uuid();
-        $this->info("3. Mengirim transaksi POST dengan Idempotency-Key: {$idempotencyKey}");
-
+        $idempotencyKey = (string) \Illuminate\Support\Str::uuid();
         $transactionData = [
             'items' => [
                 [
-                    'product_id' => 1, 
+                    'product_id' => 1,
                     'qty' => 2,
-                ],
-            ],
+                ]
+            ]
         ];
 
-        $response1 = $client->withHeaders([
-            'Idempotency-Key' => $idempotencyKey
-        ])->post("{$baseUrl}/transactions", $transactionData);
+        $this->info("3. POST transaksi dengan Idempotency-Key: {$idempotencyKey}");
+        $response1 = $client->withHeaders(['Idempotency-Key' => $idempotencyKey])
+                            ->post("{$baseUrl}/transactions", $transactionData);
+        $this->info("   -> Response 1 Status: " . $response1->status());
 
-        $this->info('   -> Response 1 Status: ' . $response1->status());
-
-        $this->info('4. Mengirim ulang (replay) transaksi dengan key yang sama...');
-        $response2 = $client->withHeaders([
-            'Idempotency-Key' => $idempotencyKey
-        ])->post("{$baseUrl}/transactions", $transactionData);
-
-        $this->info('   -> Response 2 Status: ' . $response2->status());
+        $this->info("4. Replay POST transaksi dengan key yang sama...");
+        $response2 = $client->withHeaders(['Idempotency-Key' => $idempotencyKey])
+                            ->post("{$baseUrl}/transactions", $transactionData);
         
-        if ($response2->header('Idempotent-Replayed') === 'true') {
-            $this->info('   -> Header Idempotent-Replayed terdeteksi: true');
-        }
+        $replayed = $response2->header('Idempotent-Replayed') ? 'true' : 'false';
+        $this->info("   -> Response 2 Status: " . $response2->status() . " | replayed = {$replayed}");
 
         $this->info('Demo selesai!');
     }
