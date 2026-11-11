@@ -26,7 +26,7 @@ class ApiClientDemo extends Command
      */
     public function handle()
     {
-        $baseUrl = 'http://127.0.0.1:8000/api';
+        $baseUrl = 'http://127.0.0.1:8000/api/v1';
         $this->info('Memulai Klien HTTP Demo...');
 
         $password = $this->option('wrong-password') ? 'salah' : 'password';

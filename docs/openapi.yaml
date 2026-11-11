@@ -3,7 +3,7 @@ info:
   title: Simple POS API
   version: 1.0.0
 paths:
-  /api/login:
+  /api/v1/login:
     post:
       summary: Login dan dapatkan token
       requestBody:
@@ -31,7 +31,7 @@ paths:
                 type: object
                 properties:
                   message: { type: string }
-  /api/products:
+  /api/v1/products:
     get:
       summary: Ambil daftar produk
       description: >
@@ -162,15 +162,15 @@ paths:
                     price: 250000
                     category: Aksesoris
                 links:
-                  first: "http://127.0.0.1:8000/api/products?page=1"
-                  last: "http://127.0.0.1:8000/api/products?page=3"
+                  first: "http://127.0.0.1:8000/api/v1/products?page=1"
+                  last: "http://127.0.0.1:8000/api/v1/products?page=3"
                   prev: null
-                  next: "http://127.0.0.1:8000/api/products?page=2"
+                  next: "http://127.0.0.1:8000/api/v1/products?page=2"
                 meta:
                   current_page: 1
                   from: 1
                   last_page: 3
-                  path: "http://127.0.0.1:8000/api/products"
+                  path: "http://127.0.0.1:8000/api/v1/products"
                   per_page: 5
                   to: 5
                   total: 12
@@ -216,7 +216,7 @@ paths:
                 properties:
                   message:
                     type: string
-  /api/transactions:
+  /api/v1/transactions:
     post:
       summary: Buat transaksi baru
       security:
