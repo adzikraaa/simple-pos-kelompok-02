@@ -13,8 +13,7 @@ class ApiClientDemo extends Command
      *
      * @var string
      */
-    protected $signature = 'api:demo';
-
+    protected $signature = 'api:demo {--wrong-password : Login dengan password salah untuk mengamati penanganan gagal login}';
     /**
      * The console command description.
      *
@@ -30,14 +29,16 @@ class ApiClientDemo extends Command
         $baseUrl = 'http://127.0.0.1:8000/api';
         $this->info('Memulai Klien HTTP Demo...');
 
+        $password = $this->option('wrong-password') ? 'salah' : 'password';
+
         $loginResponse = Http::acceptJson()->post("{$baseUrl}/login", [
             'email' => 'kasir@pos.test',
-            'password' => 'password',
+            'password' => $password,
         ]);
 
         if ($loginResponse->failed()) {
-            $this->error('Login gagal: ' . $loginResponse->body());
-            return;
+            $this->error('Login gagal (' . $loginResponse->status() . '): ' . $loginResponse->json('message'));
+            return self::FAILURE;
         }
 
         $token = $loginResponse->json('token'); 
@@ -65,13 +66,16 @@ class ApiClientDemo extends Command
         ];
 
         $this->info("3. POST transaksi dengan Idempotency-Key: {$idempotencyKey}");
-        $response1 = $client->withHeaders(['Idempotency-Key' => $idempotencyKey])
-                            ->post("{$baseUrl}/transactions", $transactionData);
-        $this->info("   -> Response 1 Status: " . $response1->status());
 
-        $this->info("4. Replay POST transaksi dengan key yang sama...");
-        $response2 = $client->withHeaders(['Idempotency-Key' => $idempotencyKey])
-                            ->post("{$baseUrl}/transactions", $transactionData);
+$response1 = $client->withHeaders(['Idempotency-Key' => $idempotencyKey])
+    ->post("{$baseUrl}/transactions", $transactionData);
+
+$this->info("   -> Response 1 Status: " . $response1->status());
+
+$this->info("4. Replay POST transaksi dengan key yang sama...");
+
+$response2 = $client->withHeaders(['Idempotency-Key' => $idempotencyKey])
+    ->post("{$baseUrl}/transactions", $transactionData);
         
         $replayed = $response2->header('Idempotent-Replayed') ? 'true' : 'false';
         $this->info("   -> Response 2 Status: " . $response2->status() . " | replayed = {$replayed}");
