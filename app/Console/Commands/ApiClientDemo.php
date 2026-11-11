@@ -65,13 +65,13 @@ class ApiClientDemo extends Command
         ];
 
         $this->info("3. POST transaksi dengan Idempotency-Key: {$idempotencyKey}");
-        $response1 = $client->withHeaders(['Idempotency-Key' => $idempotencyKey])
-                            ->post("{$baseUrl}/transactions", $transactionData);
+        $clientWithKey = $client->withHeaders(['Idempotency-Key' => $idempotencyKey]);
+
+        $response1 = $clientWithKey->post("{$baseUrl}/transactions", $transactionData);
         $this->info("   -> Response 1 Status: " . $response1->status());
 
         $this->info("4. Replay POST transaksi dengan key yang sama...");
-        $response2 = $client->withHeaders(['Idempotency-Key' => $idempotencyKey])
-                            ->post("{$baseUrl}/transactions", $transactionData);
+        $response2 = $clientWithKey->post("{$baseUrl}/transactions", $transactionData);
         
         $replayed = $response2->header('Idempotent-Replayed') ? 'true' : 'false';
         $this->info("   -> Response 2 Status: " . $response2->status() . " | replayed = {$replayed}");
