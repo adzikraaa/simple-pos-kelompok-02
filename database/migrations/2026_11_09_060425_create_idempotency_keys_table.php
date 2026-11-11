@@ -11,8 +11,8 @@ return new class extends Migration
         Schema::create('idempotency_keys', function (Blueprint $table) {
             $table->id();
             $table->string('key')->unique();
-            $table->string('request_path');
-            $table->json('request_body');
+            $table->foreignId('user_id')->nullable()->constrained();
+            $table->string('request_hash');
             $table->integer('response_status')->nullable();
             $table->json('response_body')->nullable();
             $table->timestamps();
